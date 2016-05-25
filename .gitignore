@@ -1,0 +1,11 @@
+.*.swp
+.settings
+.project
+.buildpath
+.DS_Store
+.idea
+.metadata
+.tags*
+*.db
+*.pyc
+/wdSpider/settings.py
