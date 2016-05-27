@@ -4,7 +4,7 @@ import time
 import sys
 reload(sys)
 sys.setdefaultencoding("utf-8")
-from scrapy.spider import BaseSpider
+from scrapy.spiders import BaseSpider
 from scrapy.selector import HtmlXPathSelector
 from scrapy.http import TextResponse, Request
 from scrapy.conf import settings
