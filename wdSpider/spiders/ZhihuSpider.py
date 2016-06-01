@@ -27,7 +27,7 @@ class ZhihuSpider(BaseSpider):
         ]
 
     print st.d_date('%H%M')
-    if int(st.d_date('%H')) == 23:
+    if int(st.d_date('%H%M')) == 1600:
         words = st.sMatch('<ul id="hot-list" class="list">', '</ul>', st.sGet('http://top.baidu.com'), 0)
         words = st.sMatch('title="', '"', words[0], 0)
         for x in range(0, len(words)):
