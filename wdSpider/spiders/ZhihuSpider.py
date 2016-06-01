@@ -4,6 +4,7 @@ import time
 import sys
 reload(sys)
 sys.setdefaultencoding("utf-8")
+import commands
 from scrapy.spiders import BaseSpider
 from scrapy.selector import HtmlXPathSelector
 from scrapy.http import TextResponse, Request
@@ -12,16 +13,31 @@ from wdSpider.utils.tools import sTools
 
 import wdSpider
 from wdSpider.items import WdspiderItem
+st = sTools()
 
 
 class ZhihuSpider(BaseSpider):
     name = 'zhihu'
     allow_domains = ["zhihu.com"]
     #start_urls = ["http://zhidao.baidu.com/"]
+
     start_urls = [
         "http://www.zhihu.com/explore",
         #u"http://www.zhihu.com/search?type=content&q=女主播不许吃香蕉"
         ]
+
+    print st.d_date('%H%M')
+    if int(st.d_date('%H')) == 23:
+        words = st.sMatch('<ul id="hot-list" class="list">', '</ul>', st.sGet('http://top.baidu.com'), 0)
+        words = st.sMatch('title="', '"', words[0], 0)
+        for x in range(0, len(words)):
+            #print words[x]
+            start_urls.append('http://www.zhihu.com/search?type=content&q=%s' % words[x])
+
+    #print start_urls
+    #sys.exit()
+    #commands.getoutput('/usr/bin/php /htdocs/quant/baidu.php').split(',')
+
     headers = {
         "Accept": "*/*",
         "Accept-Encoding": "gzip,deflate",
@@ -73,7 +89,7 @@ class ZhihuSpider(BaseSpider):
             for ask in ask_list:
                 ask = ask.encode('utf-8')
                 askstr += ask+"<br>"
-        st = sTools()
+        #st = sTools()
         _title = title[0].encode('utf-8').replace(u'- 知乎', '')
         _title = _title.replace("\n", '')
         item['question'] = st.strip_tags(_title)
