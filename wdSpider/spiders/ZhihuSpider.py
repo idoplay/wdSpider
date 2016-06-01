@@ -65,7 +65,9 @@ class ZhihuSpider(BaseSpider):
 
         '''
         all_links = hxs.select('//a[@class="question_link"]/@href').extract()
-        #all_links = hxs.select('//a[@class="js-title-link"]/@href').extract()
+        all_links2 = hxs.select('//a[@class="js-title-link"]/@href').extract()
+
+        all_links += all_links2
 
         #print all_links
         #sys.exit()
