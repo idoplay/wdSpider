@@ -5,6 +5,7 @@ import sys
 reload(sys)
 sys.setdefaultencoding("utf-8")
 import commands
+import json
 from scrapy.spiders import BaseSpider
 from scrapy.selector import HtmlXPathSelector
 from scrapy.http import TextResponse, Request
@@ -91,6 +92,7 @@ class ZhihuSpider(BaseSpider):
             for ask in ask_list:
                 ask = ask.encode('utf-8')
                 askstr += ask+"<br>"
+                #askstr.append(ask)
         #st = sTools()
         _title = title[0].encode('utf-8').replace(u'- 知乎', '')
         _title = _title.replace("\n", '')

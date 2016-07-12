@@ -15,7 +15,7 @@ import hashlib
 class WdspiderPipeline(object):
     def __init__(self):
         mysqlinfo = settings['MYSQL']
-        self.mysql = sMysql(mysqlinfo['host'], mysqlinfo['user'], mysqlinfo['pass'], 'we_center')
+        self.mysql = sMysql(mysqlinfo['host'], mysqlinfo['user'], mysqlinfo['pass'], 'wenda')
 
     def open_spider(self, spider):
         self.start_time = time.time()
