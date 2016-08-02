@@ -15,6 +15,7 @@ from wdSpider.utils.db import sMysql
 import hashlib
 from wdSpider.utils.tools import sTools
 from wdSpider.items import WdspiderItem
+from scrapy.conf import settings
 
 
 class SosoSpider(BaseSpider):
@@ -38,7 +39,12 @@ class SosoSpider(BaseSpider):
     def __qun_wd(self, response):
         _data = response.body
         re = json.loads(_data)
-        mysql = sMysql('127.0.0.1', 'root', '1234asdf', 'we_center')
+        #mysql = sMysql('127.0.0.1', 'root', '1234asdf', 'wenda')
+        mysqlinfo = settings['MYSQL']
+        #print settings['SEND_AUTO_URL']
+        #return False
+        mysql = sMysql(mysqlinfo['host'], mysqlinfo['user'], mysqlinfo['pass'], 'wenda')
+
         for i in range(0, len(re['qunWorldQuestionList'])):
             item = {}
             if re['qunWorldQuestionList'][i]['answerNum'] == 0:
@@ -51,25 +57,24 @@ class SosoSpider(BaseSpider):
             #print re['qunWorldQuestionList'][i]['answers']
             #sys.exit()
             item['question'] = re['qunWorldQuestionList'][i]['content'].encode('utf-8')
-            item['question_detail'] = ''
             item['topics'] = ''
-            item['answers'] = [{'agree_count': random.randint(5, 25), 'publish_time': time.time(), "comments": {}}]
             item['answers_text'] = re['qunWorldQuestionList'][i]['answers'][0]['richText'].encode('utf-8')
-            item['signcc'] = 123123
-            item['callback'] = 'http://wenwen.sogou.com/qun/world/question?qid=%s' % re['qunWorldQuestionList'][i]['id']
-
-
-            _hash = hashlib.md5(item['callback']).hexdigest()
+            callback = 'http://wenwen.sogou.com/qun/world/question?qid=%s' % re['qunWorldQuestionList'][i]['id']
+            _hash = hashlib.md5(callback).hexdigest()
             _has = mysql.getRecord("select * from  spider_urls where hash='%s'" % _hash, 1)
-            indata = {'url': item['callback'], 'hash': _hash}
+            indata = {'url': callback, 'hash': _hash}
 
-            print indata
+            #print indata
+            #print item
+
+            #sys.exit()
             if _has is None:
                 mysql.dbInsert('spider_urls', indata)
             else:
                 print "This Url exists....."
                 continue
-            req = urllib2.Request("http://www.zhidaode.com/?/shenjianshou/question/")
+
+            req = urllib2.Request(settings['SEND_AUTO_URL'])
             data = urllib.urlencode(item)
             #enable cookie
             opener = urllib2.build_opener(urllib2.HTTPCookieProcessor())
